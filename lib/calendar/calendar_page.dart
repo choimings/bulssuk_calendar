@@ -71,8 +71,6 @@ class _CalendarPageState extends State<CalendarPage> {
           }
         });
 
-        print('Loaded memoDates: $memoDates');
-        print('Loaded memoDetails: $memoDetails');
       } else {
         print('Failed to load alarms: ${response.body}');
       }
@@ -90,7 +88,10 @@ class _CalendarPageState extends State<CalendarPage> {
 
     if (memoDetails.containsKey(strippedDate)) {
       final memoList = memoDetails[strippedDate];
-      final recentMemo = memoList?.first;
+      final recentMemo = memoList?.first; // 첫 번째 메모를 가져옴
+
+      // recentMemo 데이터 확인
+      print('Recent Memo being passed to MemoModalPage: $recentMemo');
 
       showModalBottomSheet(
         context: context,
@@ -107,7 +108,7 @@ class _CalendarPageState extends State<CalendarPage> {
               MaterialPageRoute(
                 builder: (context) => SavedMemoPage(
                   selectedDate: strippedDate,
-                  initialMemoList: memoDetails[strippedDate] ?? [], // 메모 리스트 전달
+                  initialMemoList: memoDetails[strippedDate] ?? [],
                 ),
               ),
             ),
@@ -117,8 +118,8 @@ class _CalendarPageState extends State<CalendarPage> {
     } else {
       print('No memos found for selected date: $strippedDate');
     }
-
   }
+
 
 
 
@@ -156,7 +157,6 @@ class _CalendarPageState extends State<CalendarPage> {
               .toSet();
         });
       } else {
-        print('Failed to load attendance history: ${response.body}');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('출석 기록을 불러오지 못했습니다: ${response.body}'),
@@ -296,7 +296,6 @@ class _CalendarPageState extends State<CalendarPage> {
 
               DateTime strippedDate = _stripTime(selectedDay); // 시간 제거
               print('Selected Day: $strippedDate');
-              print('MemoDetails for selected date: ${memoDetails[strippedDate]}');
 
               if (memoDetails.containsKey(strippedDate)) {
                 await _showMemoModal(selectedDay);

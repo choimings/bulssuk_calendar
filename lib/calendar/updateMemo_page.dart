@@ -96,7 +96,6 @@ class _UpdateMemoPageState extends State<UpdateMemoPage> {
         );
         Navigator.pop(context, true);
       } else {
-        print('Failed to update memo: ${response.body}');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('알람 수정 실패: ${response.body}')),
         );
@@ -112,6 +111,14 @@ class _UpdateMemoPageState extends State<UpdateMemoPage> {
 
   // 메모 삭제 함수
   Future<void> _deleteMemo() async {
+    if (widget.memo['user_calendar_no'] == null) {
+      print('Error: user_calendar_no is null');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('메모 식별자가 없습니다. 삭제를 취소합니다.')),
+      );
+      return;
+    }
+
     final userId = await _storage.read(key: 'user_id');
 
     if (userId == null) {
@@ -139,7 +146,6 @@ class _UpdateMemoPageState extends State<UpdateMemoPage> {
         );
         Navigator.pop(context, true);
       } else {
-        print('Failed to delete memo: ${response.body}');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('알람 삭제 실패: ${response.body}')),
         );
@@ -151,6 +157,7 @@ class _UpdateMemoPageState extends State<UpdateMemoPage> {
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

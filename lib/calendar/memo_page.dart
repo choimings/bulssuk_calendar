@@ -53,7 +53,6 @@ class _MemoPageState extends State<MemoPage> {
   }
 
   // 알람 저장 함수
-  // 알람 저장 함수
   Future<void> _saveMemo() async {
     final storage = FlutterSecureStorage();
     String? userId = await storage.read(key: 'user_id');
@@ -93,7 +92,6 @@ class _MemoPageState extends State<MemoPage> {
         );
         Navigator.pop(context, true); // 저장 후 이전 화면으로 돌아가기
       } else {
-        print('Failed to save alarm: ${response.body}');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('알람 저장 실패: ${response.body}')),
         );

@@ -62,25 +62,6 @@ class MemoModalPage extends StatelessWidget {
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () async {
-                final result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UpdateMemoPage(
-                      memo: recentMemo,
-                      selectedDate: selectedDate,
-                    ),
-                  ),
-                );
-
-                // 수정/삭제 후 결과가 true이면 데이터 갱신
-                if (result == true) {
-                  onViewAll(); // 부모 화면의 갱신 함수 호출
-                }
-              },
-              child: const Text('수정'),
-            ),
           ],
         ),
       ),

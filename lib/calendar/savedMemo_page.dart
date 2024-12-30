@@ -52,7 +52,6 @@ class _SavedMemoPageState extends State<SavedMemoPage> {
 
       if (response.statusCode == 200) {
         final List<dynamic> fetchedMemos = jsonDecode(response.body);
-        print('Fetched memos: $fetchedMemos'); // `user_calendar_no` 포함 여부 확인
         setState(() {
           memoList = fetchedMemos;
         });
@@ -97,7 +96,7 @@ class _SavedMemoPageState extends State<SavedMemoPage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => UpdateMemoPage(
-                        memo: memo, // `user_calendar_no`를 포함한 메모 전달
+                        memo: memo, // `user_calendar_no` 포함
                         selectedDate: widget.selectedDate,
                       ),
                     ),
@@ -107,7 +106,12 @@ class _SavedMemoPageState extends State<SavedMemoPage> {
                     _refreshMemoList();
                   }
                 },
-                child: const Text('수정'),
+                child: const Text(
+                  '수정',
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
               ),
             ),
           );
