@@ -1,31 +1,38 @@
 import 'package:flutter/material.dart';
+import 'updateMemo_page.dart';
 
 class MemoModalPage extends StatelessWidget {
-  final DateTime selectedDate; // 선택된 날짜
-  final String alarmName; // 알람 이름
-  final String alarmFrequency; // 반복 주기
-  final String alarmMemo; // 알람 메모
-  final VoidCallback onViewAll; // 메모 전체보기 콜백
+  final DateTime selectedDate;
+  final Map<String, dynamic> recentMemo;
+  final VoidCallback onViewAll;
 
   const MemoModalPage({
     Key? key,
     required this.selectedDate,
-    required this.alarmName,
-    required this.alarmFrequency,
-    required this.alarmMemo,
+    required this.recentMemo,
     required this.onViewAll,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      child: SingleChildScrollView(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 5,
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -34,48 +41,38 @@ class MemoModalPage extends StatelessWidget {
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 TextButton(
-                  onPressed: onViewAll, // 메모 전체보기 페이지로 이동
-                  child: const Text('메모 전체보기'),
+                  onPressed: onViewAll,
+                  child: const Text('메모 전체보기', style: TextStyle(color: Colors.blue)),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-            TextField(
-              readOnly: true,
-              decoration: InputDecoration(
-                labelText: '알림 이름',
-                border: OutlineInputBorder(),
-                hintText: alarmName,
-              ),
+            const SizedBox(height: 16),
+            Text(
+              '알림 이름: ${recentMemo['user_calendar_name']}',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 12),
-            TextField(
-              readOnly: true,
-              decoration: InputDecoration(
-                labelText: '알림 설정',
-                border: OutlineInputBorder(),
-                hintText: alarmFrequency,
-              ),
+            const SizedBox(height: 8),
+            Text(
+              '알림 설정: ${recentMemo['user_calendar_every']}',
+              style: const TextStyle(fontSize: 16),
             ),
-            const SizedBox(height: 12),
-            TextField(
-              readOnly: true,
-              maxLines: 3,
-              decoration: InputDecoration(
-                labelText: '알림 메모',
-                border: OutlineInputBorder(),
-                hintText: alarmMemo,
-              ),
+            const SizedBox(height: 8),
+            Text(
+              '알림 메모: ${recentMemo['user_calendar_memo']}',
+              style: const TextStyle(fontSize: 16),
             ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () => Navigator.pop(context), // 모달 닫기
-                  child: const Text('확인'),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UpdateMemoPage(
+                    selectedDate: selectedDate,
+                    memo: recentMemo,
+                  ),
                 ),
-              ],
+              ),
+              child: const Text('수정'),
             ),
           ],
         ),
