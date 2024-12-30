@@ -31,17 +31,17 @@ class _UpdateMemoPageState extends State<UpdateMemoPage> {
   void initState() {
     super.initState();
 
-    // 디버깅용 출력
-    print('Received memo: ${widget.memo}');
+
+    if (widget.memo['user_calendar_no'] == null) {
+      print('Error: user_calendar_no is null in UpdateMemoPage');
+    }
 
     // 등록 시의 알림 상태와 데이터를 초기화
     _nameController = TextEditingController(text: widget.memo['user_calendar_name']);
     _alarmFrequency = widget.memo['user_calendar_every'];
     _memoController = TextEditingController(text: widget.memo['user_calendar_memo']);
-    _alarmEnabled = widget.memo['user_calendar_list'] ?? false; // 알림 상태 초기화
+    _alarmEnabled = widget.memo['user_calendar_list'] ?? false;
 
-    // 디버깅용 출력
-    print('Initial alarmEnabled: $_alarmEnabled');
 
     _loadUserId();
   }
@@ -82,7 +82,6 @@ class _UpdateMemoPageState extends State<UpdateMemoPage> {
       'user_calendar_list': _alarmEnabled, // 토글 상태 전달
     };
 
-    print('Sending alarm update request with data: $alarmData'); // 디버깅용 로그임다
 
     try {
       final response = await http.put(

@@ -29,6 +29,10 @@ class _SavedMemoPageState extends State<SavedMemoPage> {
   }
 
   Future<void> _refreshMemoList() async {
+    setState(() {
+      memoList = []; // 기존 리스트 초기화
+    });
+
     final storage = FlutterSecureStorage(); // Secure Storage 객체 생성
     String? userId = await storage.read(key: 'user_id'); // 저장된 user_id 읽기
 
@@ -48,8 +52,9 @@ class _SavedMemoPageState extends State<SavedMemoPage> {
 
       if (response.statusCode == 200) {
         final List<dynamic> fetchedMemos = jsonDecode(response.body);
+        print('Fetched memos: $fetchedMemos'); // `user_calendar_no` 포함 여부 확인
         setState(() {
-          memoList = fetchedMemos; // 메모 리스트 업데이트
+          memoList = fetchedMemos;
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -75,11 +80,13 @@ class _SavedMemoPageState extends State<SavedMemoPage> {
                 .selectedDate.day}일 메모'),
       ),
       body: memoList.isEmpty
-          ? Center(child: Text('저장된 메모가 없습니다.', style: TextStyle(fontSize: 16)))
+          ? Center(child: CircularProgressIndicator()) // 로딩 상태 표시
           : ListView.builder(
         itemCount: memoList.length,
         itemBuilder: (context, index) {
           final memo = memoList[index];
+
+
           return Card(
             child: ListTile(
               title: Text(memo['user_calendar_name']),
@@ -90,14 +97,14 @@ class _SavedMemoPageState extends State<SavedMemoPage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => UpdateMemoPage(
-                        memo: memo, // memo 객체 전달
+                        memo: memo, // `user_calendar_no`를 포함한 메모 전달
                         selectedDate: widget.selectedDate,
                       ),
                     ),
                   );
 
                   if (result == true) {
-                    _refreshMemoList(); // 데이터 갱신
+                    _refreshMemoList();
                   }
                 },
                 child: const Text('수정'),

@@ -56,15 +56,18 @@ class _CalendarPageState extends State<CalendarPage> {
         final List<dynamic> alarms = jsonDecode(response.body);
 
         setState(() {
+          memoDetails.clear(); // 기존 데이터 초기화
+          memoDates.clear();
+
           for (var alarm in alarms) {
             DateTime alarmDate =
-            _stripTime(DateTime.parse(alarm['created_at']).toLocal());
+            _stripTime(DateTime.parse(alarm['user_calendar_date']).toLocal());
 
             if (!memoDetails.containsKey(alarmDate)) {
               memoDetails[alarmDate] = [];
             }
             memoDetails[alarmDate]!.add(alarm);
-            memoDates.add(alarmDate); // 날짜만 저장
+            memoDates.add(alarmDate); // 날짜 저장
           }
         });
 
@@ -77,6 +80,7 @@ class _CalendarPageState extends State<CalendarPage> {
       print('Error loading alarms: $e');
     }
   }
+
 
 
 
@@ -113,6 +117,7 @@ class _CalendarPageState extends State<CalendarPage> {
     } else {
       print('No memos found for selected date: $strippedDate');
     }
+
   }
 
 
@@ -288,19 +293,18 @@ class _CalendarPageState extends State<CalendarPage> {
                 _selectedDay = selectedDay;
                 _focusedDay = focusedDay;
               });
-              // 디버그 로그 추가
-              print('Selected Day: $_selectedDay');
-              print('Focused Day: $_focusedDay');
 
-              // 선택된 날짜의 메모 모달 표시
-              DateTime strippedDate = _stripTime(selectedDay); // 시간 정보 제거
+              DateTime strippedDate = _stripTime(selectedDay); // 시간 제거
+              print('Selected Day: $strippedDate');
+              print('MemoDetails for selected date: ${memoDetails[strippedDate]}');
+
               if (memoDetails.containsKey(strippedDate)) {
-                print('Memo found for selected date: $strippedDate');
                 await _showMemoModal(selectedDay);
               } else {
                 print('No memo found for selected date: $strippedDate');
               }
             },
+
 
             calendarStyle: const CalendarStyle(
               todayDecoration: BoxDecoration(
