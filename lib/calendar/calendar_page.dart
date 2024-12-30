@@ -103,7 +103,7 @@ class _CalendarPageState extends State<CalendarPage> {
               MaterialPageRoute(
                 builder: (context) => SavedMemoPage(
                   selectedDate: strippedDate,
-                  memoList: memoList!,
+                  initialMemoList: memoDetails[strippedDate] ?? [], // 메모 리스트 전달
                 ),
               ),
             ),
@@ -114,10 +114,6 @@ class _CalendarPageState extends State<CalendarPage> {
       print('No memos found for selected date: $strippedDate');
     }
   }
-
-
-
-
 
 
 

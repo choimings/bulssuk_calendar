@@ -53,6 +53,7 @@ class _MemoPageState extends State<MemoPage> {
   }
 
   // 알람 저장 함수
+  // 알람 저장 함수
   Future<void> _saveMemo() async {
     final storage = FlutterSecureStorage();
     String? userId = await storage.read(key: 'user_id');
@@ -67,17 +68,15 @@ class _MemoPageState extends State<MemoPage> {
       return;
     }
 
-    // 날짜를 YYYYMMDD 형식으로 변환
-    String formattedDate = '${widget.selectedDate.year}'
-        '${widget.selectedDate.month.toString().padLeft(2, '0')}'
-        '${widget.selectedDate.day.toString().padLeft(2, '0')}';
+    // 날짜를 YYYY-MM-DD 형식으로 변환
+    String formattedDate = '${widget.selectedDate.year}-${widget.selectedDate.month.toString().padLeft(2, '0')}-${widget.selectedDate.day.toString().padLeft(2, '0')}';
 
     final alarmData = {
       'user_id': userId,
       'user_calendar_name': _alarmName,
       'user_calendar_every': _alarmFrequency,
       'user_calendar_memo': _memoController.text,
-      'selected_date': widget.selectedDate.toIso8601String(),
+      'user_calendar_date': formattedDate, // 날짜 추가
       'user_calendar_list': _alarmEnabled, // 알림 활성화 상태 전송
     };
 
@@ -106,6 +105,7 @@ class _MemoPageState extends State<MemoPage> {
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
