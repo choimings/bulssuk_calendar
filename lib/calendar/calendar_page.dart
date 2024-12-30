@@ -88,28 +88,35 @@ class _CalendarPageState extends State<CalendarPage> {
       final memoList = memoDetails[strippedDate];
       final recentMemo = memoList?.first;
 
-      showDialog(
+      showModalBottomSheet(
         context: context,
-        builder: (context) => MemoModalPage(
-          selectedDate: strippedDate,
-          alarmName: recentMemo['user_calendar_name'],
-          alarmFrequency: recentMemo['user_calendar_every'],
-          alarmMemo: recentMemo['user_calendar_memo'],
-          onViewAll: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SavedMemoPage(
-                selectedDate: strippedDate,
-                memoList: memoList!,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        isScrollControlled: true,
+        builder: (context) {
+          return MemoModalPage(
+            selectedDate: strippedDate,
+            recentMemo: recentMemo,
+            onViewAll: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SavedMemoPage(
+                  selectedDate: strippedDate,
+                  memoList: memoList!,
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       );
     } else {
       print('No memos found for selected date: $strippedDate');
     }
   }
+
+
+
 
 
 
