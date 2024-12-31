@@ -55,6 +55,23 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  // 리사이클링, 업사이클링 기업 리스트를 가져오는 API 함수
+  Future<List<Map<String, dynamic>>> fetchCompanies() async {
+    final url = Uri.parse('http://localhost:8001/company');
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        return List<Map<String, dynamic>>.from(json.decode(response.body));
+      } else {
+        throw Exception('Failed to load companies');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
   // URL 열기 함수
   void _openUrl(String url) async {
     if (await canLaunch(url)) {
@@ -322,13 +339,33 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(
               height: 150,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  _buildRecyclingCard(context, '플라스틱 방앗간', 'assets/plastic_bag.png'),
-                  _buildRecyclingCard(context, '119REO', 'assets/119reo.jpg'),
-                  _buildRecyclingCard(context, 'seedkeeper', 'assets/seedkeeper.jpg'),
-                ],
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: fetchCompanies(), // 리사이클링 기업 데이터를 가져오는 함수
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text('No companies available'));
+                  }
+
+                  final companies = snapshot.data!;
+
+                  return ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: companies.length,
+                    itemBuilder: (context, index) {
+                      final company = companies[index];
+                      return _buildRecyclingCard(
+                        context,
+                        company['company_name'], // 기업 이름
+                        company['company_img'], // 기업 이미지 URL
+                        company['company_no'], // 기업 ID
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ],
@@ -391,12 +428,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   // 리사이클링 카드 위젯
-  Widget _buildRecyclingCard(BuildContext context, String title, String imagePath) {
+  Widget _buildRecyclingCard(
+      BuildContext context, String title, String imageUrl, int companyId) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ReupcyclingPage()), // ReupcyclingPage로 이동
+          MaterialPageRoute(
+            builder: (context) => ReupcyclingPage(companyId: companyId),
+          ),
         );
       },
       child: Container(
@@ -416,7 +456,11 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(imagePath, height: 80, fit: BoxFit.cover),
+            Image.network(
+              imageUrl,
+              height: 80,
+              fit: BoxFit.cover,
+            ),
             const SizedBox(height: 5),
             Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
           ],
