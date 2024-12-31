@@ -46,7 +46,7 @@ class _SavedMemoPageState extends State<SavedMemoPage> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://localhost:8080/date?user_id=$userId&user_calendar_date=${widget.selectedDate.toIso8601String().split('T')[0]}',
+          'http://localhost:8001/date?user_id=$userId&user_calendar_date=${widget.selectedDate.toIso8601String().split('T')[0]}',
         ),
       );
 

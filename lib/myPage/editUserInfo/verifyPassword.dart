@@ -66,7 +66,7 @@ class _VerifyPasswordState extends State<VerifyPassword> {
       return;
     }
 
-    final url = Uri.parse('http://localhost:8080/verify-password'); // 비밀번호 확인 API
+    final url = Uri.parse('http://localhost:8001/verify-password'); // 비밀번호 확인 API
     try {
       final response = await http.post(
         url,

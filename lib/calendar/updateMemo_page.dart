@@ -85,7 +85,7 @@ class _UpdateMemoPageState extends State<UpdateMemoPage> {
 
     try {
       final response = await http.put(
-        Uri.parse('http://localhost:8080/update_alarm'),
+        Uri.parse('http://localhost:8001/update_alarm'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(alarmData),
       );
@@ -135,7 +135,7 @@ class _UpdateMemoPageState extends State<UpdateMemoPage> {
 
     try {
       final response = await http.put(
-        Uri.parse('http://localhost:8080/deactivate_alarm'),
+        Uri.parse('http://localhost:8001/deactivate_alarm'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(deleteData),
       );

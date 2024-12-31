@@ -351,7 +351,7 @@ class _SignUpInputPageState extends State<SignUpInputPage> {
                     final fullEmail = '$email@$domain';
 
                     try {
-                      final url = Uri.parse('http://localhost:8080/send_email');
+                      final url = Uri.parse('http://localhost:8001/send_email');
                       final response = await http.post(
                         url,
                         headers: {'Content-Type': 'application/json'},
@@ -433,7 +433,7 @@ class _SignUpInputPageState extends State<SignUpInputPage> {
                       final fullEmail = '$email@$domain';
 
                       final emailRandomNumber = _authCodeController.text;
-                      final url = Uri.parse('http://localhost:8080/verify_email');
+                      final url = Uri.parse('http://localhost:8001/verify_email');
                       try {
                         final response = await http.post(
                           url,
@@ -525,7 +525,7 @@ class _SignUpInputPageState extends State<SignUpInputPage> {
                       return;
                     }
                     print('아이디 중복 확인 요청: $userId');
-                    final url = Uri.parse('http://localhost:8080/id_check'); // Node.js 서버 URL
+                    final url = Uri.parse('http://localhost:8001/id_check'); // Node.js 서버 URL
                     try {
                       final response = await http.post(
                         url,
@@ -721,7 +721,7 @@ class _SignUpInputPageState extends State<SignUpInputPage> {
                     return;
                   }
 
-                  final url = Uri.parse('http://localhost:8080/sign_up');
+                  final url = Uri.parse('http://localhost:8001/sign_up');
                   try {
                     final response = await http.post(
                       url,

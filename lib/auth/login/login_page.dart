@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoginFailed = false; // 로그인 실패 상태
 
   Future<void> login() async {
-    final url = Uri.parse('http://localhost:8080/user_login'); // 서버 로그인 엔드포인트
+    final url = Uri.parse('http://localhost:8001/user_login'); // 서버 로그인 엔드포인트
 
     try {
       final response = await http.post(

@@ -50,7 +50,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
     }
 
     try {
-      final url = Uri.parse('http://localhost:8080/update-password'); // 비밀번호 업데이트 API
+      final url = Uri.parse('http://localhost:8001/update-password'); // 비밀번호 업데이트 API
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},

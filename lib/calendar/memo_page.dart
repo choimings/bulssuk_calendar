@@ -33,7 +33,7 @@ class _MemoPageState extends State<MemoPage> {
   Future<void> _loadExistingAlarm() async {
     try {
       final response = await http.get(
-        Uri.parse('http://localhost:8080/alarm/${widget.alarmId}'),
+        Uri.parse('http://localhost:8001/alarm/${widget.alarmId}'),
       );
 
       if (response.statusCode == 200) {
@@ -81,7 +81,7 @@ class _MemoPageState extends State<MemoPage> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:8080/alarm'), // 백엔드의 알람 등록 API 확인
+        Uri.parse('http://localhost:8001/alarm'), // 백엔드의 알람 등록 API 확인
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(alarmData),
       );
