@@ -327,7 +327,9 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => RecyclingMenuPage(categoryId: category['category_no']),
+                          builder: (context) => RecyclingMenuPage(
+                              categoryId: category['category_no'],
+                              categoryName: category['category_name']), // 전달할 카테고리 이름
                         ),
                       );
                     },

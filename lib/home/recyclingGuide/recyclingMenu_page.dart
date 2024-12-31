@@ -5,8 +5,9 @@ import 'recyclingDetail_page.dart';
 
 class RecyclingMenuPage extends StatefulWidget {
   final int categoryId;
+  final String categoryName;
 
-  const RecyclingMenuPage({required this.categoryId, Key? key}) : super(key: key);
+  const RecyclingMenuPage({required this.categoryId, required this.categoryName, Key? key}) : super(key: key);
 
   @override
   _RecyclingMenuPageState createState() => _RecyclingMenuPageState();
@@ -45,7 +46,9 @@ class _RecyclingMenuPageState extends State<RecyclingMenuPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Menu')),
+      appBar: AppBar(
+        title: Text(widget.categoryName), // 전달받은 카테고리 이름을 제목으로 설정
+      ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : Padding(
