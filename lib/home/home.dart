@@ -21,6 +21,7 @@ class _HomePageState extends State<HomePage> {
   bool isLoading = true; // 로딩 상태
   PageController _pageController = PageController(); // PageView 컨트롤러
   Timer? _timer; // 자동 스크롤 타이머
+  List<dynamic> categories = []; // 대분류 데이터 저장
 
   // 뉴스 데이터를 가져오는 함수
   Future<void> fetchArticles() async {
@@ -55,6 +56,23 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  // 대분류 데이터를 API로 가져오기
+  Future<void> fetchCategories() async {
+    try {
+      final response = await http.get(Uri.parse('http://localhost:8001/categories'));
+      if (response.statusCode == 200) {
+        setState(() {
+          categories = json.decode(response.body);
+          isLoading = false;
+        });
+      } else {
+        throw Exception('Failed to load categories');
+      }
+    } catch (e) {
+      print('Error fetching categories: $e');
+    }
+  }
+
   // 리사이클링, 업사이클링 기업 리스트를 가져오는 API 함수
   Future<List<Map<String, dynamic>>> fetchCompanies() async {
     final url = Uri.parse('http://localhost:8001/company');
@@ -85,6 +103,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     fetchArticles(); // 초기화 시 뉴스 데이터 가져오기
+    fetchCategories(); // 초기화 시 대분류 데이터 가져옴
   }
 
   @override
@@ -285,49 +304,37 @@ class _HomePageState extends State<HomePage> {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
-                '분리수거 가이드',
+                '분리수거 대분류',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: GridView.count(
-                crossAxisCount: 3, // 한 줄에 3개의 항목
-                shrinkWrap: true, // GridView가 Column 내에서 높이를 자동으로 조절하도록 설정
-                physics: const NeverScrollableScrollPhysics(), // 스크롤 비활성화
-                children: [
-                  _buildGuideItemWithImage(context, '종이', 'assets/paper.png', () {
-                    print('종이 클릭됨');
-                  }),
-                  _buildGuideItemWithImage(context, '종이팩', 'assets/paper_pack.png', () {
-                    print('종이팩 클릭됨');
-                  }),
-                  _buildGuideItemWithImage(context, '금속캔', 'assets/can.png', () {
-                    print('금속캔 클릭됨');
-                  }),
-                  _buildGuideItemWithImage(context, '유리', 'assets/glass.png', () {
-                    print('유리 클릭됨');
-                  }),
-                  _buildGuideItemWithImage(context, '비닐', 'assets/binil.png', () {
-                    print('비닐 클릭됨');
-                  }),
-                  _buildGuideItemWithImage(context, '페트병', 'assets/pet.png', () {
-                    print('페트병 클릭됨');
-                  }),
-                  _buildGuideItemWithImage(context, '플라스틱', 'assets/plastic.png', () {
-                    print('플라스틱 클릭됨');
-                  }),
-                  _buildGuideItemWithImage(context, '스티로폼', 'assets/styrofoam.png', () {
-                    print('스티로폼 클릭됨');
-                  }),
-                  _buildGuideItemWithImage(context, '기타', 'assets/trashcan.png', () {
-                    print('기타 클릭됨');
-                  }),
-                ],
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : GridView.count(
+                crossAxisCount: 3,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(8.0),
+                children: List.generate(categories.length, (index) {
+                  final category = categories[index];
+                  return _buildCategoryItem(
+                    context,
+                    category['category_name'],
+                    category['category_img'],
+                        () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RecyclingMenuPage(categoryId: category['category_no']),
+                        ),
+                      );
+                    },
+                  );
+                }),
               ),
             ),
-
-            const Divider(),
 
             // 5. reupcycling 영역 (가로 스크롤)
             const Padding(
@@ -353,7 +360,8 @@ class _HomePageState extends State<HomePage> {
                   final companies = snapshot.data!;
 
                   return ListView.builder(
-                    scrollDirection: Axis.horizontal,
+                    scrollDirection: Axis.horizontal, // 가로 스크롤
+                    physics: const AlwaysScrollableScrollPhysics(), // 스크롤 강제 활성화
                     itemCount: companies.length,
                     itemBuilder: (context, index) {
                       final company = companies[index];
@@ -376,27 +384,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   // 분리수거 가이드 아이템 위젯
-  Widget _buildGuideItemWithImage(BuildContext context, String title, String imagePath, VoidCallback onTap) {
+  Widget _buildCategoryItem(BuildContext context, String title, String imagePath, VoidCallback onTap) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => RecyclingMenuPage(title: title), // const 제거
-          ),
-        );
-      },
+      onTap: onTap,
       child: Column(
         children: [
           Container(
-            width: 100, // 둥근 네모의 너비
-            height: 100, // 둥근 네모의 높이
+            width: 100,
+            height: 100,
             decoration: BoxDecoration(
-              color: Colors.white, // 네모의 배경색
-              borderRadius: BorderRadius.circular(12), // 모서리를 둥글게
-              border: Border.all( // 테두리 추가
-                color: const Color(0xFF67EACA), // 테두리 색상 설정
-                width: 2, // 테두리 두께
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12), // 둥근 테두리
+              border: Border.all(
+                color: const Color(0xFF67EACA),
+                width: 2,
               ),
               boxShadow: [
                 BoxShadow(
@@ -407,12 +408,12 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             child: Padding(
-              padding: const EdgeInsets.all(16.0), // 이미지와 네모 박스의 경계 사이 패딩
+              padding: const EdgeInsets.all(16.0),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(12), // 이미지도 둥근 네모에 맞게 자르기
-                child: Image.asset(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
                   imagePath,
-                  fit: BoxFit.cover, // 이미지가 네모에 맞게 들어가도록 설정
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
@@ -426,6 +427,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
 
   // 리사이클링 카드 위젯
   Widget _buildRecyclingCard(
