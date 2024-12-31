@@ -319,10 +319,12 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.all(8.0),
                 children: List.generate(categories.length, (index) {
                   final category = categories[index];
+                  // 데이터베이스 경로를 assets 경로로 변환
+                  final imagePath = 'assets${category['category_img'].replaceFirst('/uploads/images', '')}';
                   return _buildCategoryItem(
                     context,
                     category['category_name'],
-                    category['category_img'],
+                    imagePath,
                         () {
                       Navigator.push(
                         context,
@@ -413,8 +415,8 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(16.0),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  imagePath,
+                child: Image.asset(
+                  imagePath, // 로컬 경로로 이미지 로드
                   fit: BoxFit.cover,
                 ),
               ),
