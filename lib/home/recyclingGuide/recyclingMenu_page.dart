@@ -79,6 +79,7 @@ class _RecyclingMenuPageState extends State<RecyclingMenuPage> {
                   MaterialPageRoute(
                     builder: (context) => RecyclingDetailPage(
                       subcategoryId: subcategory['subcategory_no'],
+                      subcategoryName: subcategory['subcategory_name']
                     ),
                   ),
                 );

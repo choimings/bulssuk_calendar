@@ -4,8 +4,9 @@ import 'package:http/http.dart' as http;
 
 class RecyclingDetailPage extends StatefulWidget {
   final int subcategoryId;
+  final String subcategoryName;
 
-  const RecyclingDetailPage({required this.subcategoryId, Key? key}) : super(key: key);
+  const RecyclingDetailPage({required this.subcategoryId, required this.subcategoryName, Key? key}) : super(key: key);
 
   @override
   _RecyclingDetailPageState createState() => _RecyclingDetailPageState();
@@ -43,7 +44,9 @@ class _RecyclingDetailPageState extends State<RecyclingDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Detail')),
+      appBar: AppBar(
+        title: Text(widget.subcategoryName), // 전달받은 카테고리 이름을 제목으로 설정
+      ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : Padding(
